@@ -28,11 +28,11 @@ This policy helps speed up the overall time spent seaching for best model.
 Below parameters were employed for automl configuration 
 ```
     experiment_timeout_minutes=15,
-    task= 'classification',
-    primary_metric='accuracy',
-    training_data=x,
+    task= 'classification', # indicates what is the prediction task
+    primary_metric='accuracy', # this is the metric that automl optimizes for
+    training_data=x, 
     label_column_name='y',
-    n_cross_validations=2
+    n_cross_validations=2  # when validation data is not provided, azure ml uses this paramter as the number of cross validations during training
 
 ```
 
@@ -53,3 +53,14 @@ Ideally, a metric such as F1 score could be employed for comparison rather than 
 performance of these algorithms when predicting parameters other than true positives.
 Trying a larger set of hyperparameters could help improve the performance of hyperdrive config run. 
 Hyperdrive config run would also benefit from trying various pipelines with different scaling methods and classification algorithms.
+
+#### Why these suggestions would improve models?
+Running Automl for a longer duration would allow automl to investigate more pipelines and hyper parameters which might have better performance compared to the
+model found during limited search time. Increasing the runtime would incur a larger cost.
+Employing a Score such as F1 would improve the actual model performance on other classification aspects such as precision, recall rather than
+just optimising for accuracy.
+Using a larger set of hyperparameters during the hyperdrive config would increase the search space for parameters that direclty effect 
+model performance.
+Different pipelines with various normalisation, scaling approaches would help hyperdrive config run 
+since if the data is not normalised properly, gradients would take a long time oscillating back and forth before finding global/local minimum.
+There seems to be a data bias towards negative cases: balancing the classes in input data would help avoid bias on model
